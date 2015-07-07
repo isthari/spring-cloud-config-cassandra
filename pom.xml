@@ -1,40 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.isthari.spring.cloud.config</groupId>
-	<artifactId>spring-cloud-config-cassandra</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <packaging>jar</packaging>
 
+	<name>spring-cloud-config-cassandra</name>
+	<description>spring-cloud-config-cassandra</description>
+	<groupId>com.isthari.spring.cloud.config</groupId>
+	<artifactId>cassandra</artifactId>
+	<version>0.0-SNAPSHOT</version>
+<!--
+	<parent>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-config</artifactId>
+		<version>1.0.1.RELEASE</version>
+		<relativePath>..</relativePath>
+	</parent>
+-->
+	<dependencies>
+		<dependency>
+	<groupId>com.datastax.cassandra</groupId>
+	<artifactId>cassandra-driver-core</artifactId>
+	<version>2.1.6</version>
+</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-client</artifactId>
+			<version>1.0.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>1.2.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+                        <version>1.2.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+                        <version>1.0.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+                        <version>1.2.3.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>demo.TestServer</start-class>
+		<java.version>1.7</java.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-
-<dependency>
-	<groupId>com.datastax.cassandra</groupId>
-	<artifactId>cassandra-driver-core</artifactId>
-	<version>2.0.0-beta1</version>
-</dependency>
-            
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.6</version>
-		</dependency>
-
-
-	</dependencies>
-
+	<build>
+		<plugins>
+	      <plugin>
+		    <!--skip deploy (this is just a test module) -->
+		    <artifactId>maven-deploy-plugin</artifactId>
+		    <configuration>
+		      <skip>true</skip>
+		    </configuration>
+	      </plugin>
+		  <plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
