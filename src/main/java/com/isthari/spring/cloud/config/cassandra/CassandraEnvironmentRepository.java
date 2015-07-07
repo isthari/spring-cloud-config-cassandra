@@ -33,40 +33,28 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 		Environment environment = new Environment(application, profile);
 						
 		// Primero con application-profile
-		ResultSet rs = session.execute(statement.bind(application, label, profile));
-		for (Row row : rs.all()){
-			Map<Object,Object> objs = row.getMap("properties", Object.class, Object.class);
-			PropertySource ps = new PropertySource(profile+"-"+label, objs);
-			environment.add(ps);
-		}
+		this.process(application, profile, label, environment);		
 		
 		// luego con application		
-		profile="";
-		rs = session.execute(statement.bind(application, label, profile));
-		for (Row row : rs.all()){
-			Map<Object,Object> objs = row.getMap("properties", Object.class, Object.class);
-			PropertySource ps = new PropertySource(profile+"-"+label, objs);
-			environment.add(ps);
-		}
+		this.process(application, "", label, environment);		
 		
-		// por ultimo con global-application
-		application="application";
-		rs = session.execute(statement.bind(application, label, profile));
-		for (Row row : rs.all()){
-			Map<Object,Object> objs = row.getMap("properties", Object.class, Object.class);
-			PropertySource ps = new PropertySource(profile+"-"+label, objs);
-			environment.add(ps);
-		}
+		// con global-application
+		this.process("application", "", label, environment);
 		
-		profile="development";
-		rs = session.execute(statement.bind(application, label, profile));
-		for (Row row : rs.all()){
-			Map<Object,Object> objs = row.getMap("properties", Object.class, Object.class);
-			PropertySource ps = new PropertySource(profile+"-"+label, objs);
-			environment.add(ps);
-		}
+		// globa-application proffile
+		this.process("application", profile, label, environment);		
 
 		return environment;
+	}
+	
+	private void process(String application, String profile, String label, Environment environment){
+		ResultSet rs = session.execute(statement.bind(application, label, profile));
+		Row row = rs.one();
+		if (row!=null){		
+			Map<Object,Object> objs = row.getMap("properties", Object.class, Object.class);
+			PropertySource ps = new PropertySource(profile+"-"+label, objs);
+			environment.add(ps);
+		}
 	}
 
 }
