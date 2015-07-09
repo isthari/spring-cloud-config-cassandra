@@ -16,7 +16,7 @@ If you have already a Cassandra instance in your machine, you must disable test 
 mvn -Dmaven.test.skip install
 ```
 
-... or use the existint Cassandra instance
+... or use the existing Cassandra instance
 ```
 mvn -Disthari.cassandra.test.embedded=false instll
 ```
@@ -29,6 +29,8 @@ cd demo-server
 mvn spring-boot:run
 ```
 
+If you have want to use Cassandra on another host, or need to include credentials please modify the file src/main/resources/application.properties
+
 ### Populating tables
 To populate the tables with initial configuration to execute the demo
 
@@ -36,3 +38,8 @@ To populate the tables with initial configuration to execute the demo
 cd demo-server
 cqlsh -f src/main/resources/populate.cql
 ```
+
+### Testing the server
+curl localhost:8080/app1/devel/master2 | python -m json.tool
+curl localhost:8080/app1/devel/master | jq '.'
+

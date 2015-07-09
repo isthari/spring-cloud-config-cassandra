@@ -21,7 +21,6 @@
 
 	<modules>
 		<module>cassandra</module>
-<!--		<module>demo-client</module>-->
 		<module>demo-server</module>
 	</modules>
 </project>

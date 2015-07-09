@@ -27,6 +27,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.config.environment.Environment;
 import org.springframework.cloud.config.environment.PropertySource;
 import org.springframework.cloud.config.server.EnvironmentRepository;
@@ -44,17 +46,17 @@ import com.datastax.driver.core.Session;
  *
  */
 public class CassandraEnvironmentRepository implements EnvironmentRepository {
-	// configuration options
-	
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CassandraEnvironmentRepository.class);		
 	private static final String GLOBAL_APPLICATION="application";
 	
-	private Session session;
-	
+	// CASSANDRA
+	private Session session;	
 	private PreparedStatement stmtGetVersion;
 	private PreparedStatement stmtGetSnapshot;
 	
+	// THREAD POOL
 	private ThreadPoolExecutor executor;
+
 
 	public CassandraEnvironmentRepository(ConfigurableEnvironment environment, String hostnames, String username, String password, Boolean createSchema) {
 		
@@ -119,6 +121,7 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 	@Override
 	public Environment findOne(String application, String profile, String label) {
 		Environment environment = new Environment(application, profile);
+		environment.setLabel(label);
 		
 		Future<PropertySource> futureApplicationProfile = this.findOneAsync(application, profile, label);
 		Future<PropertySource> futureApplication = this.findOneAsync(application, "", label);
@@ -141,28 +144,50 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 				environment.add(propertySource);
 			}
 		} catch (InterruptedException | ExecutionException | TimeoutException  e) {
-			e.printStackTrace();
+			LOGGER.error("", e);
 		}		
 	}
 			
 	private Future<PropertySource> findOneAsync(final String application, final String profile, final String label){
-		return executor.submit(new Callable<PropertySource>() {
-			@Override
-			public PropertySource call() throws Exception {
-				PropertySource result = null;
-				ResultSet rsVersion = session.execute(stmtGetVersion.bind(application, label, profile));
-				Row rowVersion = rsVersion.one();
-				if (rowVersion!=null){
-					UUID version = rowVersion.getUUID("version");
-					Row rowSnapshot = session.execute(stmtGetSnapshot.bind(application, version)).one();
-					if (rowSnapshot!=null){
-						Map<Object, Object> parameters = rowSnapshot.getMap("parameters", Object.class, Object.class); 
-								result = new PropertySource("cassandra-"+application+"-"+profile, parameters);
-					}
-				}
-				return result;
-			}
-		});
+		return executor.submit(new ProcessQuery(application, profile, label));
 	}
 
+	private class ProcessQuery implements Callable<PropertySource> {
+		private String application;
+		private String profile;
+		private String label;
+		
+		public ProcessQuery(String application, String profile, String label) {
+			super();
+			this.application = application;
+			this.profile = profile;
+			this.label = label;
+		}
+
+		@Override
+		public PropertySource call() throws Exception {
+			PropertySource result = null;
+			ResultSet rsVersion = session.execute(stmtGetVersion.bind(application, label, profile));
+			Row rowVersion = rsVersion.one();
+			if (rowVersion!=null){
+				UUID version = rowVersion.getUUID("version");
+				Row rowSnapshot = session.execute(stmtGetSnapshot.bind(application, version)).one();
+				if (rowSnapshot!=null){
+					Map<Object, Object> parameters = rowSnapshot.getMap("parameters", Object.class, Object.class);
+					
+					StringBuilder builder = new StringBuilder("cassandra");
+					if (application!=null && application.trim().length()>0){
+						builder.append("-");
+						builder.append(application);
+					}
+					if (profile!=null && profile.trim().length()>0){
+						builder.append("-");
+						builder.append(profile);
+					}						
+					result = new PropertySource(builder.toString(), parameters);
+				}
+			}
+			return result;
+		}
+	}
 }

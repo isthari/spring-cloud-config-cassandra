@@ -17,6 +17,7 @@
 package demo.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,7 +35,10 @@ import com.isthari.spring.cloud.config.cassandra.CassandraEnvironmentRepository;
 @EnableConfigServer
 @EnableConfigurationProperties(ConfigServerProperties.class)
 public class DemoServer {
-
+	
+	private DemoServer(){		
+	}
+	
 	public static void main(String[] args) {
 		SpringApplication.run(DemoServer.class, args);		
 	}
@@ -42,11 +46,23 @@ public class DemoServer {
 	@Configuration	
 	protected static class CassandraRepositoryConfiguration {
 		@Autowired
-		private ConfigurableEnvironment environment;		
+		private ConfigurableEnvironment environment;
+	
+		@Value("${isthari.cassandra.hostname}")
+		private String hostname;
+		
+		@Value("${isthari.cassandra.username}")
+		private String username;
+		
+		@Value("${isthari.cassandra.password}")
+		private String password;
+		
+		@Value("${isthari.cassandra.create_schema}")
+		private Boolean createSchema=true;
 		
 		@Bean
-		public EnvironmentRepository environmentRepository() {
-			return new CassandraEnvironmentRepository(environment);
+		public EnvironmentRepository environmentRepository() {			
+			return new CassandraEnvironmentRepository(environment, hostname, username, password, createSchema);
 		}
 
 	}
