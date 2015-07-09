@@ -59,7 +59,7 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 		// Create the schema and tables
 		try (Session ddlSession = cluster.connect()){			
 			ddlSession.execute("CREATE KEYSPACE if NOT EXISTS cloud_config WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}");			
-			ddlSession.execute("CREATE TYPE cloud_config.mutation (value text , operation text, user text)");
+			ddlSession.execute("CREATE TYPE if not exists cloud_config.mutation (value text , operation text, user text)");
 			
 			ddlSession.execute("CREATE TABLE if NOT EXISTS cloud_config.application_label_version "
 					+ "(application text, label text, profile text, version timeuuid , "
