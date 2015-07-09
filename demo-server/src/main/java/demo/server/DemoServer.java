@@ -36,7 +36,7 @@ import com.isthari.spring.cloud.config.cassandra.CassandraEnvironmentRepository;
 @EnableConfigurationProperties(ConfigServerProperties.class)
 public class DemoServer {
 	
-	private DemoServer(){		
+	public DemoServer(){		
 	}
 	
 	public static void main(String[] args) {

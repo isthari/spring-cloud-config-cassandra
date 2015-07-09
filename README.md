@@ -40,11 +40,55 @@ cqlsh -f src/main/resources/populate.cql
 ```
 
 ### Testing the server
-curl localhost:8080/app1/devel/master2 | python -m json.tool
-curl localhost:8080/app1/devel/master | jq '.'
+
+The following command connect to the demo server asking for the configuration of the application 'app1' deployed in the environment 'devel
+
+```
+curl localhost:8080/app1/devel
+```
+
+TIP: Use of the the following command to get a more humand friendly output
+
+```
+curl localhost:8080/app1/devel | python -m json.tool
+curl localhost:8080/app1/devel | jq '.'
+```
+
+The output for the above command:
+```
+{
+  "propertySources": [
+    {
+      "source": {
+        "param2": "value2",
+        "param1": "value1"
+      },
+      "name": "cassandra-app1-devel"
+    },
+    {
+      "source": {
+        "param3": "value3"
+      },
+      "name": "cassandra-app1"
+    },
+    {
+      "source": {
+        "param4": "value4"
+      },
+      "name": "cassandra-application"
+    }
+  ],
+  "label": "master",
+  "profiles": [
+    "devel"
+  ],
+  "name": "app1"
+}
+```
 
 ## License
 
+Copyright (C) 2015 Isthari Ltd.
 The module is released under the non-restrictive Apache 2.0 License
 
 ## Contributors
