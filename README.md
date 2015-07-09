@@ -47,7 +47,7 @@ The following command connect to the demo server asking for the configuration of
 curl localhost:8080/app1/devel
 ```
 
-TIP: Use of the the following command to get a more humand friendly output
+TIP: Use one of the the following command to get a more humand friendly output
 
 ```
 curl localhost:8080/app1/devel | python -m json.tool
@@ -55,7 +55,7 @@ curl localhost:8080/app1/devel | jq '.'
 ```
 
 The output for the above command:
-```
+``` json
 {
   "propertySources": [
     {
