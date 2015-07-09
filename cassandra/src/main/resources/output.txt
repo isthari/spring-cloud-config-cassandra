@@ -1,0 +1,30 @@
+{
+  "name": "foo",
+  "profiles": [
+    "development"
+  ],
+  "label": "master",
+  "propertySources": [
+    {
+      "name": "https:\/\/github.com\/spring-cloud-samples\/config-repo\/foo-development.properties",
+      "source": {
+        "bar": "spam"
+      }
+    },
+    {
+      "name": "https:\/\/github.com\/spring-cloud-samples\/config-repo\/foo.properties",
+      "source": {
+        "foo": "bar"
+      }
+    },
+    {
+      "name": "https:\/\/github.com\/spring-cloud-samples\/config-repo\/application.yml",
+      "source": {
+        "info.description": "Spring Cloud Samples",
+        "info.url": "https:\/\/github.com\/spring-cloud-samples",
+        "eureka.client.serviceUrl.defaultZone": "http:\/\/user:${eureka.password:}@localhost:8761\/eureka\/",
+        "eureka.password": "{cipher}AQBdTe9vjgOqANyfi+Ke5HYmhFJnuvsGJ+8FOqLgdMdFInJkVRzy9XngylNp9KlX2lwPI13jT7ceDjBs9w4B6A15akQTHHP1q9rWwMcLtVCCKGFgvXSgQF+WWIItxBmIDGG4bSgDYZ6XQWl66T84PxjTBygErpmAjn+X2BWdtWtVmjXzpMQMaHGpiyLPoGIQYF4j9ZGpl16Jx79+j6et6LStksrT3WxQuanhZwIkqZ827+2mlUB3kd5ocW7R0vC3JMGVZlGNfqYQwJIhSJ19lrq4gxm\/zbGroYonW3QSHTiRlhlvOdovEua\/0dCl6+s0iEHYZCBllr7jikEWmS5Px7U2TG8\/eQkjR8pUbSN6OE+OI2ZZUCNOT+mi75ZeeN1OtdQ="
+      }
+    }
+  ]
+}
