@@ -4,10 +4,21 @@
 Cassandra data provider for Spring Cloud http://cloud.spring.io/spring-cloud-config/
 
 ## Tutorial
-After download the code you must compile, package and install
+After download the code you must compile, package and install. This script start an EmbeddedCassandraService to run the JUnit tests.
 
 ```
 mvn install
+```
+
+If you have already a Cassandra instance in your machine, you must disable test ...
+
+```
+mvn -Dmaven.test.skip install
+```
+
+... or use the existint Cassandra instance
+```
+mvn -Disthari.cassandra.test.embedded=false instll
 ```
 
 ### Running the demo server

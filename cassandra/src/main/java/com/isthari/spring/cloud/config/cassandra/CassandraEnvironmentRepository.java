@@ -44,6 +44,9 @@ import com.datastax.driver.core.Session;
  *
  */
 public class CassandraEnvironmentRepository implements EnvironmentRepository {
+	// configuration options
+	
+	
 	private static final String GLOBAL_APPLICATION="application";
 	
 	private Session session;
@@ -53,9 +56,36 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 	
 	private ThreadPoolExecutor executor;
 
-	public CassandraEnvironmentRepository(ConfigurableEnvironment environment) {
-		Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
+	public CassandraEnvironmentRepository(ConfigurableEnvironment environment, String hostnames, String username, String password, Boolean createSchema) {
 		
+		// Create cluster object
+		Cluster.Builder builder = Cluster.builder();		
+		// Add contact points
+		for (String hostname : hostnames.split(",")){
+			builder.addContactPoints(hostname);
+		}
+		
+		if (username!=null && password!=null){
+			builder.withCredentials(username, password);
+		}
+		Cluster cluster = builder.build();		
+		
+		
+		if(createSchema){
+			this.createSchema(cluster);
+		}
+		
+		// Connect
+		session = cluster.connect("cloud_config");
+		this.stmtGetVersion = session.prepare("select version from application_label_version where application=? and label=? and profile=? limit 1");
+		this.stmtGetSnapshot = session.prepare("select parameters from configuration_snapshot where application=? and version=?");
+	
+		// Executor for async tasks
+		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(10);
+		executor = new ThreadPoolExecutor(4, 10, 1, TimeUnit.DAYS, workQueue);
+	}
+	
+	private void createSchema(Cluster cluster){
 		// Create the schema and tables
 		try (Session ddlSession = cluster.connect()){			
 			ddlSession.execute("CREATE KEYSPACE if NOT EXISTS cloud_config WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}");			
@@ -71,21 +101,14 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 			ddlSession.execute("create table if not exists cloud_config.configuration_snapshot "
 					+ "(application text, "
 					+ "version timeuuid, "
-//					+ "profile text, "
+//							+ "profile text, "
 					//+ "parameters map<text,frozen<map<text,text>>>, "
 					+ "parameters map<text,text>, "
 					+ "primary KEY (application,version"
-//					+ ",profile"
+//							+ ",profile"
 					+ ")) "
 					+ "with clustering order by (version desc)");									
 		}
-		
-		session = cluster.connect("cloud_config");
-		this.stmtGetVersion = session.prepare("select version from application_label_version where application=? and label=? and profile=? limit 1");
-		this.stmtGetSnapshot = session.prepare("select parameters from configuration_snapshot where application=? and version=?");
-	
-		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(10);
-		executor = new ThreadPoolExecutor(4, 10, 1, TimeUnit.DAYS, workQueue);
 	}
 
 	@Override

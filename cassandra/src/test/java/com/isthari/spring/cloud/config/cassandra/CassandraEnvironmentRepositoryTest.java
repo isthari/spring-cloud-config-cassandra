@@ -38,19 +38,24 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.UUIDs;
 
 public class CassandraEnvironmentRepositoryTest {
+	private static Boolean useEmbeddedCassandra=true;
 	private static CassandraEnvironmentRepository repository;
 	private static Session session;
 	private static PreparedStatement stmtApplicationLabelProfile;
 	private static PreparedStatement stmtApplicationSnapshot;
-
+	
 	@BeforeClass
 	public static void startCassandra() throws Exception {		
-		cleanUp();		
+		String embedded = System.getProperty("isthari.cassandra.test.embedded");
+		useEmbeddedCassandra = embedded==null || "true".equals(useEmbeddedCassandra);
 		
-		EmbeddedCassandraService cassandra = new EmbeddedCassandraService();
-		cassandra.start();
+		if (useEmbeddedCassandra){
+			cleanUp();				
+			EmbeddedCassandraService cassandra = new EmbeddedCassandraService();
+			cassandra.start();
+		}
 		
-		repository = new CassandraEnvironmentRepository(null);
+		repository = new CassandraEnvironmentRepository(null, "127.0.0.1", null, null, true);
 		
 		// LOAD TEST DATASET
 		Class<?> clazz = repository.getClass();
@@ -66,8 +71,10 @@ public class CassandraEnvironmentRepositoryTest {
 
 	@AfterClass
 	public static void cleanUp() throws IOException {
-		CassandraServiceDataCleaner cleaner = new CassandraServiceDataCleaner();
-		cleaner.cleanupDataDirectories();
+		if (useEmbeddedCassandra){
+			CassandraServiceDataCleaner cleaner = new CassandraServiceDataCleaner();
+			cleaner.cleanupDataDirectories();
+		}
 		
 	}
 	
