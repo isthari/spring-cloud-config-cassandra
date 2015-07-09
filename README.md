@@ -18,7 +18,7 @@ mvn -Dmaven.test.skip install
 
 ... or use the existing Cassandra instance
 ```
-mvn -Disthari.cassandra.test.embedded=false instll
+mvn -Disthari.cassandra.test.embedded=false install
 ```
 
 ### Running the demo server
@@ -41,13 +41,13 @@ cqlsh -f src/main/resources/populate.cql
 
 ### Testing the server
 
-The following command connect to the demo server asking for the configuration of the application 'app1' deployed in the environment 'devel
+The following command connect to the demo server asking for the configuration of the application 'app1' deployed in the environment 'devel'
 
 ```
 curl localhost:8080/app1/devel
 ```
 
-TIP: Use one of the the following command to get a more humand friendly output
+TIP: Use one of the the following command to get a more human friendly output
 
 ```
 curl localhost:8080/app1/devel | python -m json.tool
