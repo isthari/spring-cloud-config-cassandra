@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<packaging>pom</packaging>
+
+	<name>spring-cloud-config-cassandra-parent</name>
+	<description>spring-cloud-config-cassandra</description>
+	<groupId>com.isthari.spring.cloud.config</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.0-SNAPSHOT</version>
+	
+	<properties>
+		<cassandra-driver-version>2.1.6</cassandra-driver-version>		
+		<guava-version>18.0</guava-version>
+		<junit-version>4.12</junit-version>
+		<spring-boot-version>1.2.3.RELEASE</spring-boot-version>
+		<spring-cloud-config-version>1.0.1.RELEASE</spring-cloud-config-version>
+	</properties>
+
+	<modules>
+		<module>cassandra</module>
+<!--		<module>demo-client</module>-->
+		<module>demo-server</module>
+	</modules>
+</project>

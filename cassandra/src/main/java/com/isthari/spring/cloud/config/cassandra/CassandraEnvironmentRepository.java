@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2015 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.isthari.spring.cloud.config.cassandra;
 
 import java.util.Map;
@@ -22,6 +38,11 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
+/**
+ * 
+ * @author jose.hernandez@isthari.com
+ *
+ */
 public class CassandraEnvironmentRepository implements EnvironmentRepository {
 	private static final String GLOBAL_APPLICATION="application";
 	
@@ -39,7 +60,12 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 		try (Session ddlSession = cluster.connect()){			
 			ddlSession.execute("CREATE KEYSPACE if NOT EXISTS cloud_config WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}");			
 			ddlSession.execute("CREATE TYPE cloud_config.mutation (value text , operation text, user text)");
-			ddlSession.execute("CREATE TABLE if NOT EXISTS cloud_config.application_label_version (application text, label text, profile text, version timeuuid , primary KEY (application,label, profile))");			
+			
+			ddlSession.execute("CREATE TABLE if NOT EXISTS cloud_config.application_label_version "
+					+ "(application text, label text, profile text, version timeuuid , "
+					+ "primary KEY (application,label, profile, version)) "
+					+ "with clustering order by (label asc, profile asc, version desc)");
+			
 			ddlSession.execute("CREATE table if NOT EXISTS cloud_config.configuration_changes (application text, label text, version timeuuid, base_version timeuuid, changes map<text,frozen<map<text,mutation>>>, primary key (application, label, version)) with clustering order by (label asc, version desc)");
 			
 			ddlSession.execute("create table if not exists cloud_config.configuration_snapshot "
@@ -55,7 +81,7 @@ public class CassandraEnvironmentRepository implements EnvironmentRepository {
 		}
 		
 		session = cluster.connect("cloud_config");
-		this.stmtGetVersion = session.prepare("select version from application_label_version where application=? and label=? and profile=?");
+		this.stmtGetVersion = session.prepare("select version from application_label_version where application=? and label=? and profile=? limit 1");
 		this.stmtGetSnapshot = session.prepare("select parameters from configuration_snapshot where application=? and version=?");
 	
 		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(10);

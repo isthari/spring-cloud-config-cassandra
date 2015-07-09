@@ -9,86 +9,61 @@
 	<description>spring-cloud-config-cassandra</description>
 	<groupId>com.isthari.spring.cloud.config</groupId>
 	<artifactId>cassandra</artifactId>
-	<version>0.0-SNAPSHOT</version>
-	<!-- <parent> <groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-config</artifactId> 
-		<version>1.0.1.RELEASE</version> <relativePath>..</relativePath> </parent> -->
-	<dependencies>
-		<dependency>
-			<groupId>com.datastax.cassandra</groupId>
-			<artifactId>cassandra-driver-core</artifactId>
-			<version>2.1.6</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.apache.cassandra</groupId>
-			<artifactId>cassandra-all</artifactId>
-			<version>2.1.6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
-			<scope>test</scope>
-		</dependency>			
+	<parent>
+		<groupId>com.isthari.spring.cloud.config</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0-SNAPSHOT</version>
+	</parent>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>demo.TestServer</start-class>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
+	
+	<dependencies>
+		<!-- TEST DEPENDENCIES -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- CASSANDRA EMBEDDED TEST SERVICE -->		
+		<dependency>
+			<groupId>org.apache.cassandra</groupId>
+			<artifactId>cassandra-all</artifactId>
+			<version>${cassandra-driver-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- USED BY CASSANDRA EMBEDDED -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava-version}</version>
+			<scope>test</scope>
+		</dependency>
+		
 
 
 
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+			<version>${cassandra-driver-version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-client</artifactId>
-			<version>1.0.1.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>1.2.3.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<version>1.2.3.RELEASE</version>
+			<version>${spring-cloud-config-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-server</artifactId>
-			<version>1.0.1.RELEASE</version>
+			<version>${spring-cloud-config-version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>1.2.3.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>demo.TestServer</start-class>
-		<java.version>1.7</java.version>
-	</properties>
-
-	<build>
-		<plugins>
-			<plugin>
-				<!--skip deploy (this is just a test module) -->
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
+	</dependencies>	
 </project>
