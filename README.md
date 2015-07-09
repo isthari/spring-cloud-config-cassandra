@@ -43,3 +43,10 @@ cqlsh -f src/main/resources/populate.cql
 curl localhost:8080/app1/devel/master2 | python -m json.tool
 curl localhost:8080/app1/devel/master | jq '.'
 
+## License
+
+The module is released under the non-restrictive Apache 2.0 License
+
+## Contributors
+
+The module has been developed by [Isthari](http://www.isthari.net)
