@@ -30,6 +30,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.isthari.spring.cloud.config.cassandra.CassandraEnvironmentRepository;
 
+
+/**
+ * Demo project for a spring cloud config server application to store the configuration on Cassandra
+ * 
+ * @author jose.hernandez@isthari.com
+ *
+ */
 @Configuration
 @EnableAutoConfiguration
 @EnableConfigServer

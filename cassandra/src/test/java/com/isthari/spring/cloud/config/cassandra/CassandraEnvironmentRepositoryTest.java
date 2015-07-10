@@ -37,6 +37,15 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.UUIDs;
 
+
+/**
+ * JUnit tests for the CassandraEnvironmentRepository. Uses an Embedded Cassandra. If you already have a 
+ * Cassandra instance in your server execute the tests with -Disthari.cassandra.test.embedded=false to use Cassandra
+ * on host 127.0.0.1 without username and password.
+ * 
+ * @author jose.hernandez@isthari.com
+ *
+ */
 public class CassandraEnvironmentRepositoryTest {
 	private static Boolean useEmbeddedCassandra=true;
 	private static CassandraEnvironmentRepository repository;

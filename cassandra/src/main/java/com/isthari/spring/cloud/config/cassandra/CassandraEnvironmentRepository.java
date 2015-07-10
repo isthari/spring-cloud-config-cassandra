@@ -41,6 +41,15 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 /**
+ * Implementation on spring cloud config EnvironmentRepository to store the configuration on
+ * Cassandra. <br/><br/>
+ * Configuration optiones: 
+ * <ul>
+ * 	<li>isthari.cassandra.hostname</li>
+ *  <li>isthari.cassandra.username</li>
+ *  <li>isthari.cassandra.password</li>
+ *  <li>isthari.cassandra.create_schema</li>
+ * </ul>
  * 
  * @author jose.hernandez@isthari.com
  *
@@ -48,7 +57,7 @@ import com.datastax.driver.core.Session;
 public class CassandraEnvironmentRepository implements EnvironmentRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CassandraEnvironmentRepository.class);		
 	private static final String GLOBAL_APPLICATION="application";
-	
+		
 	// CASSANDRA
 	private Session session;	
 	private PreparedStatement stmtGetVersion;
